@@ -67,16 +67,25 @@ def combine_hurricane_data_year(combine_hurricane_data):
     return hurricane_data_year
 
 # write your count affected areas function here:
-
-
-
-
-
-
+def area_affected_count_data(combine_hurricane_data):
+    areas_lst_lst = [n["Areas Affected"] for n in combine_hurricane_data.values()]
+    area_lst = []
+    for areas_lst in areas_lst_lst:
+        for areas in areas_lst:
+            area_lst.append(areas)
+    
+    area_lst_unique = list(set(area_lst))
+    area_dict = {}
+    for area in area_lst_unique:
+        count_area = area_lst.count(area)
+        area_dict[area] = count_area
+    return area_dict
 
 # write your find most affected area function here:
-
-
+def most_areas_affected(affected_count_data):
+    max_values = max(affected_count_data.values())
+    
+    print(max_values)
 
 
 
@@ -115,7 +124,8 @@ def main():
     updated_damages = update_damage(damages)
     hurricane_combine = combine_hurricane_data(names, months, years, max_sustained_winds, areas_affected, updated_damages, deaths)
     hurricane_combine_date = combine_hurricane_data_year(hurricane_combine)
-    print(hurricane_combine_date[1932])
+    affected_count_data = area_affected_count_data(hurricane_combine)
+    print(most_areas_affected(affected_count_data))
 
 main()
 
