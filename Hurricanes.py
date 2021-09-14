@@ -45,7 +45,7 @@ def combine_hurricane_data(names, months, years, max_sustained_winds, areas_affe
             "Max Sustained Wind": max_sustained_winds[i], 
             "Areas Affected": areas_affected[i], 
             "Damage": updated_damages[i], 
-            "Death": deaths[i]
+            "Deaths": deaths[i]
             }      
     return hurricane_data
 
@@ -85,39 +85,124 @@ def area_affected_count_data(combine_hurricane_data):
 def most_areas_affected(affected_count_data):
     max_values = max(affected_count_data.values())
     
-    print(max_values)
+    most_affected_areas = []
 
+    for area in affected_count_data:
+        if affected_count_data[area] == max_values:
+            most_affected_areas.append(area)
 
-
-
+    return most_affected_areas
 
 # write your greatest number of deaths function here:
+def most_deaths(combine_hurricane_data):
+    max_deaths_list = [n["Deaths"] for n in combine_hurricane_data.values()]
+    max_deaths_value = max(max_deaths_list)
+    max_deaths_index = []
 
+    for i, n in enumerate(max_deaths_list):
+        if n == max_deaths_value:
+            max_deaths_index.append(i)
 
+    max_deaths = {}
 
-
-
-
-
+    for i in range(len(max_deaths_index)):
+        for j, key in enumerate(combine_hurricane_data):
+            if max_deaths_index[i] == j:
+                max_deaths[combine_hurricane_data[key]["Name"]] = combine_hurricane_data[key]["Deaths"]
+    
+    return max_deaths
 
 # write your catgeorize by mortality function here:
+def mortality_rating(combine_hurricane_data):
+    mortality_rating_data = {}
+    mortality_scale = {0: 0,
+                   1: 100,
+                   2: 500,
+                   3: 1000,
+                   4: 10000}
+    lst_0 = []
+    lst_1 = []
+    lst_2 = []
+    lst_3 = []
+    lst_4 = []
 
+    for n in combine_hurricane_data.values():
+        deaths = n["Deaths"]
+        if deaths > mortality_scale[4]:
+            lst_4.append(n["Name"])
+        elif deaths > mortality_scale[3]:
+            lst_3.append(n["Name"])
+        elif deaths > mortality_scale[2]:
+            lst_2.append(n["Name"])
+        elif deaths > mortality_scale[1]:
+            lst_1.append(n["Name"])
+        else:
+            lst_0.append(n["Name"])
+            
+    mortality_rating_data[4] = lst_4
+    mortality_rating_data[3] = lst_3
+    mortality_rating_data[2] = lst_2
+    mortality_rating_data[1] = lst_1
+    mortality_rating_data[0] = lst_0
 
-
-
-
-
+    return mortality_rating_data
 
 # write your greatest damage function here:
+def greatest_damage(combine_hurricane_data):
+    max_damage_list = [n["Damage"] for n in combine_hurricane_data.values()]
+    max_damage_list = [0 if n=="Damages not recorded" else n for n in max_damage_list]
+    max_damage_value = max(max_damage_list)
+    max_damage_index = []
 
+    for i, n in enumerate(max_damage_list):
+        if n == max_damage_value:
+            max_damage_index.append(i)
 
+    max_damage = {}
 
-
-
-
-
+    for i in range(len(max_damage_index)):
+        for j, key in enumerate(combine_hurricane_data):
+            if max_damage_index[i] == j:
+                max_damage[combine_hurricane_data[key]["Name"]] = combine_hurricane_data[key]["Damage"]
+    
+    return max_damage
+    
 # write your catgeorize by damage function here:
+def damage_rating(combine_hurricane_data):
+    damage_rating_data = {}
+    damage_scale = {0: 0,
+                1: 100000000,
+                2: 1000000000,
+                3: 10000000000,
+                4: 50000000000}
+    lst_0 = []
+    lst_1 = []
+    lst_2 = []
+    lst_3 = []
+    lst_4 = []
 
+    for n in combine_hurricane_data.values():
+        deaths = n["Damage"]
+        if deaths == "Damages not recorded":
+            deaths = 0
+        if deaths > damage_scale[4]:
+            lst_4.append(n["Name"])
+        elif deaths > damage_scale[3]:
+            lst_3.append(n["Name"])
+        elif deaths > damage_scale[2]:
+            lst_2.append(n["Name"])
+        elif deaths > damage_scale[1]:
+            lst_1.append(n["Name"])
+        else:
+            lst_0.append(n["Name"])
+        
+    damage_rating_data[4] = lst_4
+    damage_rating_data[3] = lst_3
+    damage_rating_data[2] = lst_2
+    damage_rating_data[1] = lst_1
+    damage_rating_data[0] = lst_0
+
+    return damage_rating_data
 
 
 def main():
@@ -125,7 +210,11 @@ def main():
     hurricane_combine = combine_hurricane_data(names, months, years, max_sustained_winds, areas_affected, updated_damages, deaths)
     hurricane_combine_date = combine_hurricane_data_year(hurricane_combine)
     affected_count_data = area_affected_count_data(hurricane_combine)
-    print(most_areas_affected(affected_count_data))
+    most_affected_areas_data = most_areas_affected(affected_count_data)
+    most_deaths_data = most_deaths(hurricane_combine)
+    mortality_rating_data = mortality_rating(hurricane_combine)
+    greatest_damage_data = greatest_damage(hurricane_combine)
+    damage_rating_data = damage_rating(hurricane_combine)
 
 main()
 
