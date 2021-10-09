@@ -39,7 +39,21 @@ class Insurance_KeyStats():
         self.smokers = [Insurance_Record(line).smoker for line in records]
         self.regions = [Insurance_Record(line).region for line in records]
         self.charges = [Insurance_Record(line).charges for line in records]
-        
+    
+    def __repr__(self):
+        return "Customer record(s) for Highest charge: \n{max_charge},\n Customer record(s) for Lowest charge: \n{min_charge},\nAverage charge for all segments: {avg_charge}".format(max_charge=self.max_charges(), min_charge=self.min_charges(),avg_charge=self.average_charges(self.charges))
+
+    def segments(self, segment):
+        segments_dict = {
+            "age": self.ages,
+            "sex": self.sexes,
+            "bmi": self.bmis,
+            "children": self.childrens,
+            "smoker": self.smokers,
+            "region": self.regions
+        }
+        return segments_dict[segment]
+
     def max_charges(self):
         max_charge = max(self.charges)
         max_charge_indices = [index for index, value in enumerate(self.charges) if value == max_charge]
@@ -63,6 +77,28 @@ class Insurance_KeyStats():
             }
             min_charges_record.append(record)
         return min_charges_record
+    
+    def average_charges(self, charge_list):
+        if len(charge_list) != 0:
+            average_charge = sum(charge_list) / len(charge_list)
+            return round(average_charge, 1)
+        return "Data not found"
+
+    def average_charges_segments(self, segment):
+        segment_list = Insurance_KeyStats(self.records).segments(segment)
+        segment_unique = set(segment_list)
+        segment_average_charge_list = []
+        for segment_value in segment_unique:
+            segment_unique_list_index = [index for index, value in enumerate(segment_list) if value == segment_value]
+            segment_charge_list = [value for index, value in enumerate(self.charges) if index in segment_unique_list_index]
+            segment_average_charge = Insurance_KeyStats(self.records).average_charges(segment_charge_list)
+            segment_average_charge_dict = {
+                "segment": segment,
+                "segment_value": segment_value,
+                "average_values": segment_average_charge
+            }
+            segment_average_charge_list.append(segment_average_charge_dict)
+        return segment_average_charge_list
 
 def main():
     with open("insurance.csv") as data:
@@ -71,8 +107,10 @@ def main():
 
     max_charges = Insurance_KeyStats(record).max_charges()
     min_charges = Insurance_KeyStats(record).min_charges()
-    print(max_charges)
-    print(min_charges)
+    avg_charge_age = Insurance_KeyStats(record).average_charges_segments("region")
+    print(Insurance_KeyStats(record))
+    # print(max_charges)
+    # print(min_charges)
 
 if __name__ == "__main__":
     main()
