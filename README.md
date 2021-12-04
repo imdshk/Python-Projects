@@ -1,4 +1,3 @@
 # Python-Projects
- Learning python
- 
- * Hurricane.py (Codeacademy)
+ Learning python 
+ * Codeacademy Projects
